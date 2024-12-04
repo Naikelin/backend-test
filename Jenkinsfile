@@ -25,7 +25,7 @@ pipeline {
                 stage("Run tests") {
                     steps {
                         echo "Running tests..."
-                        sh 'npm run test --passWithNoTests --verbose'
+                        sh 'npm run test --verbose'
                     }
                 }
                 stage("Build project") {
@@ -43,14 +43,13 @@ pipeline {
                     docker.withRegistry("${REGISTRY_HOST}", "${REGISTRY_CREDENTIALS}") {
                       echo "Building Docker image..."
                       sh "docker build -t ${IMAGE_NAME} ."
-
-                      echo "Pushing image with 'latest' tag to Nexus..."
+                      /* echo "Pushing image with 'latest' tag to Nexus..."
                       sh "docker tag ${IMAGE_NAME}:latest ${REGISTRY_HOST}/${IMAGE_NAME}:latest"
                       sh "docker push ${REGISTRY_HOST}/${IMAGE_NAME}:latest"
 
                       echo "Pushing image with 'build number' tag to Nexus..."
                       sh "docker tag ${IMAGE_NAME}:latest ${REGISTRY_HOST}/${IMAGE_NAME}:${BUILD_NUMBER}"
-                      sh "docker push ${REGISTRY_HOST}/${IMAGE_NAME}:${BUILD_NUMBER}"
+                      sh "docker push ${REGISTRY_HOST}/${IMAGE_NAME}:${BUILD_NUMBER}" */
                     }
                 }
             }
