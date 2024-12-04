@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        REGISTRY_HOST = "localhost:8082"     
+        REGISTRY_HOST = "http://localhost:8082"     
         REGISTRY_CREDENTIALS = "registry"     
         IMAGE_NAME = "backend-test"
     }
