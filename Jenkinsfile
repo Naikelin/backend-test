@@ -38,7 +38,7 @@ pipeline {
             }
         }
 
-        stage("Quality assurance"){
+        stage("QualityAssurance"){
             agent {
                 docker {
                     label 'contenedores'
@@ -48,14 +48,14 @@ pipeline {
                 }
             }
             stages{
-                stage("Quality assurance - sonarqube"){
+                stage("QualityAssurance - SonarQube"){
                     steps{
-                        withSonarQubeEnv('sonarqube') {
+                        withSonarQubeEnv("${SONARQUBE_CREDENTIALS}") {
                             sh 'sonar-scanner'
                         }
                     }
                 }
-                stage("Quality assurance - quality gate"){
+                stage("QualityAssurance - QualityGate"){
                     steps{
                         script{
                             timeout(time: 2, unit: 'MINUTES') {
