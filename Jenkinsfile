@@ -2,7 +2,8 @@ pipeline {
     agent any
     environment {
         REGISTRY = "localhost:8082"     
-        REGISTRY_CREDENTIALS = "registry"     
+        REGISTRY_CREDENTIALS = "registry"
+        SONARQUBE_CREDENTIALS = "sonarqube"
         IMAGE_NAME = "backend-test"
     }
 
@@ -32,6 +33,38 @@ pipeline {
                     steps {
                         echo "Building project..."
                         sh 'npm run build --verbose'
+                    }
+                }
+            }
+        }
+
+        stage("Quality assurance"){
+            agent {
+                docker {
+                    label 'contenedores'
+                    image 'sonarsource/sonar-scanner-cli'
+                    args '--network=devops-infra_default'
+                    reuseNode true
+                }
+            }
+            stages{
+                stage("Quality assurance - sonarqube"){
+                    steps{
+                        withSonarQubeEnv('sonarqube') {
+                            sh 'sonar-scanner'
+                        }
+                    }
+                }
+                stage("Quality assurance - quality gate"){
+                    steps{
+                        script{
+                            timeout(time: 1, unit: 'MINUTES') {
+                                def qg = waitForQualityGate()
+                                if (qg.status != 'OK') {
+                                    error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                                }
+                            }
+                        }
                     }
                 }
             }
