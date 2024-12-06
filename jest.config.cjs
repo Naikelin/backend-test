@@ -4,7 +4,7 @@ const config = {
     "^(\\.{1,2}/.*)\\.js$": "$1",
   },
   collectCoverage: true,
-  coverageReporters: ["json", "html"],
+  coverageReporters: ["json", "html", "lcov", "text"],
   coverageThreshold: {
     global: {
       branches: 90,
