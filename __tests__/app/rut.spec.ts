@@ -1,48 +1,35 @@
-import { contarCoincidenciasEnCadena } from "../../src/app/cadenas";
+import { validarRUT } from "../../src/app/rut";
 
-describe("contarCoincidenciasEnCadena", () => {
-  it("should return 0 when the substring is not found", () => {
-    const result = contarCoincidenciasEnCadena("abcde", "xyz");
-    expect(result).toBe(0);
+describe("validarRUT", () => {
+  it("should return true for a valid RUT without formatting", () => {
+    expect(validarRUT("252936068")).toBe(true);
   });
 
-  it("should return the correct count when the substring is found once", () => {
-    const result = contarCoincidenciasEnCadena("abcde", "abc");
-    expect(result).toBe(1);
+  it("should return true for a valid RUT with dots and hyphen", () => {
+    expect(validarRUT("25.293.606-8")).toBe(true);
   });
 
-  it("should return the correct count when the substring is found multiple times", () => {
-    const result = contarCoincidenciasEnCadena("abcabcabc", "abc");
-    expect(result).toBe(3);
+  it("should return false for an invalid RUT without formatting", () => {
+    expect(validarRUT("12345678X")).toBe(false);
   });
 
-  it("should handle overlapping substrings correctly", () => {
-    const result = contarCoincidenciasEnCadena("aaaa", "aa");
-    expect(result).toBe(3);
+  it("should return false for an invalid RUT with dots and hyphen", () => {
+    expect(validarRUT("12.345.678-X")).toBe(false);
   });
 
-  it("should return 0 when the substring is longer than the string", () => {
-    const result = contarCoincidenciasEnCadena("abc", "abcd");
-    expect(result).toBe(0);
+  it("should return false if the RUT is too short", () => {
+    expect(validarRUT("12")).toBe(false);
   });
 
-  it("should return the length of the string when the substring is a single character", () => {
-    const result = contarCoincidenciasEnCadena("aaaa", "a");
-    expect(result).toBe(4);
+  it("should return false if the RUT is too long", () => {
+    expect(validarRUT("1234567890123")).toBe(false);
   });
 
-  it("should return 0 for an empty substring", () => {
-    const result = contarCoincidenciasEnCadena("abc", "");
-    expect(result).toBe(0);
+  it("should return false if the RUT contains non-numeric characters (except the verifier)", () => {
+    expect(validarRUT("12345A67K")).toBe(false); // Invalid RUT with a non-numeric character
   });
 
-  it("should return 0 for an empty string", () => {
-    const result = contarCoincidenciasEnCadena("", "abc");
-    expect(result).toBe(0);
-  });
-
-  it("should return 0 when both the string and substring are empty", () => {
-    const result = contarCoincidenciasEnCadena("", "");
-    expect(result).toBe(0);
+  it("should return false if the RUT contains non-numeric characters in the verifier", () => {
+    expect(validarRUT("12345678Z")).toBe(false); // Invalid verifier
   });
 });
